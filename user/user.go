@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/mackross/gobot"
-	"github.com/mackross/gobot/chat"
+	"github.com/mackross/go-bot"
+	"github.com/mackross/go-bot/chat"
 )
 
 type Repo interface {

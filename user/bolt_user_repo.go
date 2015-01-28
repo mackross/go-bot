@@ -1,12 +1,15 @@
-package main
+package user
 
 import (
 	"encoding/json"
 	"errors"
 
 	"github.com/boltdb/bolt"
-	"github.com/mackross/gobot/user"
 )
+
+func NewBoltRepo(b *bolt.DB) *BoltUserRepo {
+	return &BoltUserRepo{b}
+}
 
 type BoltUserRepo struct {
 	*bolt.DB
@@ -14,8 +17,8 @@ type BoltUserRepo struct {
 
 var bucket = []byte("users")
 
-func (r *BoltUserRepo) UserForID(id string) (*user.User, error) {
-	var u *user.User
+func (r *BoltUserRepo) UserForID(id string) (*User, error) {
+	var u *User
 	err := r.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(bucket)
 		if bucket == nil {
@@ -33,8 +36,8 @@ func (r *BoltUserRepo) UserForID(id string) (*user.User, error) {
 	return u, err
 }
 
-func (r *BoltUserRepo) ListUsers() ([]user.User, error) {
-	users := make([]user.User, 0)
+func (r *BoltUserRepo) ListUsers() ([]User, error) {
+	users := make([]User, 0)
 	err := r.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(bucket)
 		if bucket == nil {
@@ -52,7 +55,7 @@ func (r *BoltUserRepo) ListUsers() ([]user.User, error) {
 	return users, err
 }
 
-func (r *BoltUserRepo) SaveUser(u user.User) error {
+func (r *BoltUserRepo) SaveUser(u User) error {
 	if len(u.ID) == 0 {
 		return errors.New("user id must be set to save user")
 	}
@@ -69,12 +72,12 @@ func (r *BoltUserRepo) SaveUser(u user.User) error {
 	})
 }
 
-func (r *BoltUserRepo) serializeUser(u user.User) ([]byte, error) {
+func (r *BoltUserRepo) serializeUser(u User) ([]byte, error) {
 	return json.Marshal(u)
 }
 
-func (r *BoltUserRepo) deserializeUser(b []byte) (*user.User, error) {
-	var u user.User
+func (r *BoltUserRepo) deserializeUser(b []byte) (*User, error) {
+	var u User
 	if err := json.Unmarshal(b, &u); err != nil {
 		return nil, err
 	}
