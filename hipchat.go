@@ -31,6 +31,29 @@ type HipChatNetwork struct {
 }
 
 func HipChatConnect(botID string, botPswd string, botName string, v2Token string) *HipChatNetwork {
+	connected := make(chan *HipChatNetwork)
+retry:
+	go func() {
+		fmt.Println("Attempting to connect")
+		connected <- hipChatConnect(botID, botPswd, botName, v2Token)
+	}()
+	select {
+	case conn := <-connected:
+		if conn != nil {
+			return conn
+		}
+		fmt.Println("Retrying in 10 seconds")
+		time.Sleep(10 * time.Second)
+		goto retry
+	case <-time.After(5 * time.Second):
+		fmt.Println("Retrying in 10 seconds")
+		time.Sleep(10 * time.Second)
+		goto retry
+	}
+	return nil
+}
+func hipChatConnect(botID string, botPswd string, botName string, v2Token string) *HipChatNetwork {
+
 	apiClient := api.NewClient(v2Token)
 
 	client, err := hipchat.NewClient(botID, botPswd, "bot")
@@ -39,26 +62,19 @@ func HipChatConnect(botID string, botPswd string, botName string, v2Token string
 	}
 
 	var botXMPJID, botMentionName *string
-	for i := 0; i < 5; i++ {
-		for _, u := range client.Users() {
-			if u.Name == botName {
-				jid, name := u.Id, u.MentionName
-				botXMPJID = &jid
-				botMentionName = &name
-			}
-		}
-
-		if botXMPJID == nil || botMentionName == nil {
-			fmt.Println("Couldn't find bot jid or mention name in users trying again.")
-			time.Sleep(1 * time.Second)
-		} else {
-			continue
+	for _, u := range client.Users() {
+		if u.Name == botName {
+			jid, name := u.Id, u.MentionName
+			botXMPJID = &jid
+			botMentionName = &name
 		}
 	}
+
 	if botXMPJID == nil || botMentionName == nil {
-		log.Fatalln("Couldn't find bot jid or mention name in users.")
+		fmt.Println("Couldn't find bot jid or mention name")
+		time.Sleep(10 * time.Second)
+		return nil
 	}
-
 	go func() {
 		for range client.OnConnect() {
 			client.Status("dnd")
