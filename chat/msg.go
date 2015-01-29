@@ -31,5 +31,6 @@ type Network interface {
 	Send(m OutMsg) error
 	JoinRoom(id string) error
 	SetStatus(s string) error
+	OnConnect() <-chan bool
 	Messages() <-chan InMsg
 }

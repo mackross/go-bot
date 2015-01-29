@@ -76,12 +76,6 @@ func hipChatConnect(botID string, botPswd string, botName string, v2Token string
 		time.Sleep(10 * time.Second)
 		return nil
 	}
-	go func() {
-		for range client.OnConnect() {
-			time.Sleep(1 * time.Second)
-			client.Status("chat")
-		}
-	}()
 
 	go func() {
 		client.KeepAlive()
@@ -214,4 +208,7 @@ func (h *HipChatNetwork) SetStatus(s string) error {
 
 func (h *HipChatNetwork) Messages() <-chan chat.InMsg {
 	return h.messages
+}
+func (h *HipChatNetwork) OnConnect() <-chan bool {
+	return h.client.OnConnect()
 }
