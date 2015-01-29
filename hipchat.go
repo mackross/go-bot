@@ -73,7 +73,6 @@ func hipChatConnect(botID string, botPswd string, botName string, v2Token string
 
 	if botXMPJID == nil || botMentionName == nil {
 		fmt.Println("Couldn't find bot jid or mention name")
-		time.Sleep(10 * time.Second)
 		return nil
 	}
 
