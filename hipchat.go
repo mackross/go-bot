@@ -39,16 +39,24 @@ func HipChatConnect(botID string, botPswd string, botName string, v2Token string
 	}
 
 	var botXMPJID, botMentionName *string
-	for _, u := range client.Users() {
-		if u.Name == botName {
-			jid, name := u.Id, u.MentionName
-			botXMPJID = &jid
-			botMentionName = &name
+	for i := 0; i < 5; i++ {
+		for _, u := range client.Users() {
+			if u.Name == botName {
+				jid, name := u.Id, u.MentionName
+				botXMPJID = &jid
+				botMentionName = &name
+			}
+		}
+
+		if botXMPJID == nil || botMentionName == nil {
+			fmt.Println("Couldn't find bot jid or mention name in users trying again.")
+			time.Sleep(1 * time.Second)
+		} else {
+			continue
 		}
 	}
-
 	if botXMPJID == nil || botMentionName == nil {
-		log.Fatalln("Couldn't find bot jid or mention name in users")
+		log.Fatalln("Couldn't find bot jid or mention name in users.")
 	}
 
 	go func() {
