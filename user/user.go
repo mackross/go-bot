@@ -213,9 +213,6 @@ func (r *userRootHandler) HandleMessage(b *bot.Bot, m chat.InMsg) bool {
 
 	}
 
-	users, _ := repo.ListUsers()
-	fmt.Println("USERS:", users)
-
 	return false
 }
 
