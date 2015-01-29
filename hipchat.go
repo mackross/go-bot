@@ -78,7 +78,7 @@ func hipChatConnect(botID string, botPswd string, botName string, v2Token string
 	}
 	go func() {
 		for range client.OnConnect() {
-			client.Status("dnd")
+			client.Status("chat")
 		}
 	}()
 
