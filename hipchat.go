@@ -78,6 +78,7 @@ func hipChatConnect(botID string, botPswd string, botName string, v2Token string
 	}
 	go func() {
 		for range client.OnConnect() {
+			time.Sleep(1 * time.Second)
 			client.Status("chat")
 		}
 	}()
