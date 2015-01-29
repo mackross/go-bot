@@ -34,16 +34,17 @@ func HipChatConnect(botID string, botPswd string, botName string, v2Token string
 	connected := make(chan *HipChatNetwork)
 retry:
 	go func() {
-		fmt.Println("Attempting to connect")
+		fmt.Println("Attempting to connect as", botName)
 		connected <- hipChatConnect(botID, botPswd, botName, v2Token)
 	}()
 	select {
 	case conn := <-connected:
 		if conn != nil {
+			fmt.Println("Connected")
 			return conn
 		}
-		fmt.Println("Retrying in 10 seconds")
-		time.Sleep(10 * time.Second)
+		fmt.Println("Retrying in 3 seconds")
+		time.Sleep(3 * time.Second)
 		goto retry
 	case <-time.After(5 * time.Second):
 		fmt.Println("Retrying in 10 seconds")
