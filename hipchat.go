@@ -207,6 +207,7 @@ func (h *HipChatNetwork) JoinRoom(id string) error {
 }
 
 func (h *HipChatNetwork) SetStatus(s string) error {
+	h.client.Status(s)
 	return nil
 }
 
