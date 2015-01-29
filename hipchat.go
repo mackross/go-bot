@@ -31,8 +31,8 @@ type HipChatNetwork struct {
 }
 
 func HipChatConnect(botID string, botPswd string, botName string, v2Token string) *HipChatNetwork {
-	connected := make(chan *HipChatNetwork)
 retry:
+	connected := make(chan *HipChatNetwork)
 	go func() {
 		fmt.Println("Attempting to connect as", botName)
 		connected <- hipChatConnect(botID, botPswd, botName, v2Token)
