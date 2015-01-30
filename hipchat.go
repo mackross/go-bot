@@ -205,9 +205,13 @@ func (h *HipChatNetwork) Send(m chat.OutMsg) error {
 }
 
 func (h *HipChatNetwork) JoinRoom(room string) error {
+	for _, r := range h.client.Rooms() {
+		h.rooms[r.Id] = r.Name
+	}
 	for id, name := range h.rooms {
 		if name == room {
 			h.client.Join(id, h.botName)
+			return nil
 		}
 	}
 	panic(fmt.Sprintln("join", room))
