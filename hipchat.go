@@ -204,9 +204,13 @@ func (h *HipChatNetwork) Send(m chat.OutMsg) error {
 	return fmt.Errorf("Unable to find room id with room name %v", m.To)
 }
 
-func (h *HipChatNetwork) JoinRoom(id string) error {
-	h.client.Join(id+"@conf.hipchat.com", h.botName)
-	return nil
+func (h *HipChatNetwork) JoinRoom(room string) error {
+	for id, name := range h.rooms {
+		if name == room {
+			h.client.Join(id, h.botName)
+		}
+	}
+	return fmt.Errorf("Unable to find room id with room name %v", room)
 }
 
 func (h *HipChatNetwork) SetStatus(s string) error {
