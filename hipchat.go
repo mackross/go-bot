@@ -187,7 +187,16 @@ func (h *HipChatNetwork) SendPM(m chat.OutMsg) error {
 func (h *HipChatNetwork) Send(m chat.OutMsg) error {
 	for id, name := range h.rooms {
 		if name == m.To {
-			h.client.Say(id, h.botName, m.Body)
+			if m.HTML != nil && *m.HTML {
+				nRequest := api.NotificationRequest{MessageFormat: "html", Message: m.Body}
+				_, err := h.apiClient.Room.Notification(name, &nRequest)
+				if err != nil {
+					h.client.Say(id, h.botName, m.Body)
+					return nil
+				}
+			} else {
+				h.client.Say(id, h.botName, m.Body)
+			}
 			return nil
 		}
 	}
