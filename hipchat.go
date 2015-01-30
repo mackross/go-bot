@@ -210,6 +210,7 @@ func (h *HipChatNetwork) JoinRoom(room string) error {
 			h.client.Join(id, h.botName)
 		}
 	}
+	panic(fmt.Sprintln("join", room))
 	return fmt.Errorf("Unable to find room id with room name %v", room)
 }
 
