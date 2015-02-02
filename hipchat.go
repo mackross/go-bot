@@ -192,8 +192,8 @@ func (h *HipChatNetwork) Send(m chat.OutMsg) error {
 				_, err := h.apiClient.Room.Notification(name, &nRequest)
 				if err != nil {
 					h.client.Say(id, h.botName, m.Body)
-					return nil
 				}
+				return nil
 			} else {
 				h.client.Say(id, h.botName, m.Body)
 			}
